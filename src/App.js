@@ -1,26 +1,70 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect} from 'react';
 
-function App() {
+export default function App() {
+  const [location, setLocation] = useState([]);
+
+  useEffect(() => {
+    const watchId = navigator.geolocation.watchPosition(handlePositionReceived);
+
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, []);
+
+  function handlePositionReceived({coords}) {
+    const { latitude, longitude } = coords;
+
+    setLocation({ latitude, longitude});
+  }
+  
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      Latitude: {location.latitude} <br />
+      Longitude: {location.longitude}
+    </>
+    
   );
 }
 
-export default App;
+
+/*
+
+
+ useEffect( async () => {
+
+    const response = await fetch('https://api.github.com/users/JonathasGoncalves/repos');
+    const data = await response.json();
+
+    setRepositores(data);
+  }, []);
+
+  useEffect(() => {
+    const filtro = repositores.filter(repo => repo.favorite);
+    document.title = `Você tem ${filtro.length} favoritos`;
+  }, [repositores])
+
+  function handleFavorito(id) {
+    const newRepositores = repositores.map(repo => {
+      return repo.id === id ? { ...repo, favorite: !repo.favorite} : repo;
+    })
+
+    setRepositores(newRepositores);
+  }
+
+
+  return (
+     <ul>
+        {repositores.map(repo => (
+          <li key={repo.id}>
+             {repo.name}
+             {repo.favorite && <span>(Favorito)</span>}
+             <button onClick={() => handleFavorito(repo.id)}>
+                Favoritar
+             </button> 
+          </li>
+        ))}
+      </ul>
+    
+  );
+
+
+  */
